@@ -1,10 +1,6 @@
-
-
-
-
 const EPSILON = 9 * 10 ** (-1.1); // 72ppi
 const DRAG = 0.8;
-const WEIGHT = 2, COULOMB = 72 / (4 * Math.PI * EPSILON);
+const COULOMB = 72 / (4 * Math.PI * EPSILON);
 
 var config;
 var state;
@@ -86,10 +82,10 @@ function initialization() {
   const dir = p5.Vector.sub(config.click, config.handle);
   dir.normalize();
   state.painters = [];
-  for (let i = 0; i < 720; i++) {
+  for (let i = 0; i < DENCE; i++) {
     const fac = Math.round(i / COLOR_WIDTH) % COLORS.length;
     const ini = dir.copy().mult(4);
-    const angle = i * 0.5;
+    const angle = i * 360 / DENCE;
     const pos = p5.Vector.add(config.click, ini.rotate(angle));
     const p = new Painter(angle, pos, fac);
     state.painters.push(p)
@@ -104,8 +100,8 @@ class Painter {
     this.h += random(-COLOR_WIDTH, COLOR_WIDTH)
     this.base = color(COLORS[c])
     this.color = color(COLORS[c]);
-    this.s = 100;
-    this.v = 97;
+    this.s = S;
+    this.v = V;
     this.alpha = 255;
     this.velocity = createVector();
     this.end = false;
