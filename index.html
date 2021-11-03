@@ -36,76 +36,11 @@
 		 -->
 
   <!-- here's where we include the actual sketch file -->
-  <link rel="stylesheet/less" type="text/css" href="assets/styles.less" />
-  <script src="//cdnjs.cloudflare.com/ajax/libs/less.js/3.11.1/less.min.js"></script>
   <script src="utils.js"></script>
   <script src="sketch.js"></script>
 </head>
 
 <body>
-  <div class="tools">
-    <span class="btns">
-      <span class="scheme">
-        <span>Color Scheme: </span>
-        <select name="color-scheme" id="scheme-sel" onchange="selectColorScheme(this.value)">
-          <option value="red">Red</option>
-          <option value="pink">Pink</option>
-          <option value="purple">Purple</option>
-          <option value="skyblue">Skyblue</option>
-          <option value="cyan">Cyan</option>
-          <option value="teal">Teal</option>
-          <option value="green" selected>Green</option>
-          <option value="lime">Lime</option>
-          <option value="yellow">Yellow</option>
-          <option value="orange">Orange</option>
-        </select>
-      </span>
-      <span class="theme">
-        <button onclick="switchTheme()" id="theme">Light</button>
-      </span>
-      <span class="mode">
-        <button onclick="switchMode()" id="mode">Zen</button>
-      </span>
-      <button class="clear" onclick="clearSmokers()">Clear</button>
-    </span>
-    <span class="digit-tool">
-      <span class="digits">
-        <span class="digit-span">
-          <div class="digit-inner">
-            <button onclick="onClickDigitChange('-', 'mean')">❮</button>
-            <span class="digit" id='mean'>4</span>
-            <button onclick="onClickDigitChange('+', 'mean')">❯</button>
-          </div>
-          <div class="digit-name">Amount</div>
-        </span>
-        <span class="digit-span">
-          <div class="digit-inner">
-            <button onclick="onClickDigitChange('-', 'dev')">❮</button>
-            <span class="digit" id='dev'>1</span>
-            <button onclick="onClickDigitChange('+', 'dev')">❯</button>
-          </div>
-          <div class="digit-name">Std-Dev</div>
-        </span>
-        <span class="digit-span">
-          <div class="digit-inner">
-            <button onclick="onClickDigitChange('-', 'speed')">❮</button>
-            <span class="digit" id='speed'>5</span>
-            <button onclick="onClickDigitChange('+', 'speed')">❯</button>
-          </div>
-          <div class="digit-name">Speed</div>
-        </span>
-        <span class="digit-span">
-          <div class="digit-inner">
-            <button onclick="onClickDigitChange('-', 'rise')">❮</button>
-            <span class="digit" id='rise'>16</span>
-            <button onclick="onClickDigitChange('+', 'rise')">❯</button>
-          </div>
-          <div class="digit-name">Float</div>
-        </span>
-      </span>
-      <button onclick="resetState()">↺</button>
-    </span>
-  </div>
 </body>
 
 </html>
