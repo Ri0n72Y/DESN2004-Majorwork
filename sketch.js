@@ -1,14 +1,15 @@
-const FR = 60;
 
-const EPSILON = 9 * 10 ** (-1.2); // 72ppi
-const DRAG = 0.7;
+
+
+
+const EPSILON = 9 * 10 ** (-1.1); // 72ppi
+const DRAG = 0.8;
 const WEIGHT = 2, COULOMB = 72 / (4 * Math.PI * EPSILON);
 
 var config;
 var state;
 
 const doorHeight = 0.8; // according to vw
-const doorRatio = 120 / 200;
 function getBorder() {
   if (windowWidth && windowHeight) {
     const h = doorHeight * windowHeight;
@@ -45,7 +46,7 @@ function setup() {
   frameRate(FR);
   angleMode(DEGREES);
 
-  colorMode(HSL, 360, 100, 100);
+  colorMode(HSB, 360, 100, 100);
   config = {
     border: undefined, // door xywh
     handle: undefined,
@@ -60,7 +61,6 @@ function setup() {
   config.handle = getHandle();
 
   setCanvasInitial();
-  initialization();
 }
 
 function draw() {
@@ -87,28 +87,26 @@ function initialization() {
   dir.normalize();
   state.painters = [];
   for (let i = 0; i < 720; i++) {
-    const fac = i *0.5;
+    const fac = Math.round(i / COLOR_WIDTH) % COLORS.length;
     const ini = dir.copy().mult(4);
-    const pos = p5.Vector.add(config.click, ini.rotate(fac));
-    const angle = fac;
-    const p = new Painter(angle, pos);
+    const angle = i * 0.5;
+    const pos = p5.Vector.add(config.click, ini.rotate(angle));
+    const p = new Painter(angle, pos, fac);
     state.painters.push(p)
   }
 }
 
-const COLOR_WIDTH = 2;
-const COLOR_SPREAD = 6;
-const RATIO = 2;
 class Painter {
-  constructor(angle, pos) {
+  constructor(angle, pos, c) {
     this.pos = pos;
-
     this.h = abs(angle * 2 - 360);
     this.h -= this.h % COLOR_WIDTH;
-    this.h += random(-COLOR_SPREAD, COLOR_SPREAD)
-    this.h = Math.round(abs(this.h ** RATIO / (360 ** (RATIO - 1))));
-    this.s = 80;
-    this.v = 60;
+    this.h += random(-COLOR_WIDTH, COLOR_WIDTH)
+    this.base = color(COLORS[c])
+    this.color = color(COLORS[c]);
+    this.s = 100;
+    this.v = 97;
+    this.alpha = 255;
     this.velocity = createVector();
     this.end = false;
   }
@@ -116,7 +114,12 @@ class Painter {
   draw() {
     if (this.end || !isIn(this.pos.x, this.pos.y)) return;
     push()
-    stroke(this.h, this.s, this.v)
+    if (FREE_COLOR) {
+      this.color.setAlpha(this.alpha);
+      stroke(this.color);
+    } else {
+      stroke(this.h, this.s, this.v)
+    }
     strokeWeight(WEIGHT)
     point(this.pos.x, this.pos.y)
     pop()
@@ -133,10 +136,14 @@ class Painter {
     const xS = p5.Vector.sub(this.pos, config.click).mag();
     const xT = p5.Vector.sub(this.pos, config.handle).mag();
 
-    const ra = xT / (xS + xT) * 100;
-    const RA = 0.5;
-    //this.s = 100;
-    //this.v = Math.round(abs(ra ** RA / (100 ** (RA - 1))));
+    if (xT < DISPOINT_RATIO) {
+      const s = xT / DISPOINT_RATIO;
+      //console.log(this.color._array)
+      const y = (a) => -Math.exp(5 * a *(s - a - 1)) + 1; 
+      this.color._array[0] = y(this.base._array[0]);
+      this.color._array[1] = y(this.base._array[1]);
+      this.color._array[2] = y(this.base._array[2]);
+    }
 
     const w = WEIGHT ** 2 * Math.PI;
     const ES = p5.Vector.sub(this.pos, config.click)
@@ -163,9 +170,11 @@ function mouseClicked(e) {
       config.clickHistory.push(config.click);
     }
     config.click = createVector(mouseX, mouseY);
-    setCanvasInitial();
+    //setCanvasInitial();
     initialization();
     state.drawing = true;
+  } else {
+    state.drawing = !state.drawing;
   }
 }
 
